@@ -16,7 +16,7 @@ function Products(name, path /*fileExtension = 'jpg'*/) {
   this.name = name;
   this.src = path /*`img/${name}.${fileExtension}`*/;
   this.votes = 0;
-  this.view = 0;
+  this.views = 0;
   productsArray.push(this);
 }
 
@@ -64,6 +64,12 @@ function renderImages() {
   img1.src = productsArray[uniqueProductIndex[0]].src;
   img2.src = productsArray[uniqueProductIndex[1]].src;
   img3.src = productsArray[uniqueProductIndex[2]].src;
+  img1.alt = productsArray[uniqueProductIndex[0]].name;
+  img2.alt = productsArray[uniqueProductIndex[1]].name;
+  img3.alt = productsArray[uniqueProductIndex[2]].name;
+  productsArray[uniqueProductIndex[0]].views++;
+  productsArray[uniqueProductIndex[1]].views++;
+  productsArray[uniqueProductIndex[2]].views++;
 }
 
 
@@ -72,9 +78,8 @@ function handleImageClick(event) {
   let imageClicked = event.target.alt;
 
   for (let i = 0; i < productsArray.length; i++) {
-    if (productsArray.name === imageClicked) {
-      productsArray.votes++;
-      console.log(productsArray);
+    if (productsArray[i].name === imageClicked) {
+      productsArray[i].votes++;
     }
   }
   renderImages();

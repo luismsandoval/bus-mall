@@ -1,8 +1,12 @@
 'use strict';
 
-let rounds = 10;
+let rounds = 25;
 let clicks = 0;
 let productsArray = [];
+
+let dataName = [];
+let dataVotes = [];
+let dataViews = [];
 
 let imgContainer = document.getElementById('container');
 let img1 = document.getElementById('first');
@@ -12,9 +16,12 @@ let img3 = document.getElementById('third');
 let clicky = document.getElementById('clicky');
 let results = document.getElementById('results');
 
-function Products(name, path /*fileExtension = 'jpg'*/) {
+
+
+
+function Products(name, path) {
   this.name = name;
-  this.src = path /*`img/${name}.${fileExtension}`*/;
+  this.src = path;
   this.votes = 0;
   this.views = 0;
   productsArray.push(this);
@@ -40,38 +47,41 @@ new Products('unicorn', 'img/unicorn.jpg');
 new Products('water-can', 'img/water-can.jpg');
 new Products('wine-glass', 'img/wine-glass.jpg');
 
-console.log(productsArray);
+
 
 function getRandomInt() {
   return Math.floor(Math.random() * productsArray.length);
 }
 
-function renderImages() {
-  for (let i = 0; i < 1; i++) {
-    if (clicks === rounds) {
-      break;
-    }
-  }
-  let uniqueProductIndex = [];
 
-  while (uniqueProductIndex.length < 3) {
+
+let productIndex = [];
+
+function renderImages() {
+
+  while (productIndex.length < 6) {
     let num = getRandomInt();
-    while (uniqueProductIndex.includes(num)) {
+    while (productIndex.includes(num)) {
       num = getRandomInt();
     }
-    uniqueProductIndex.push(num);
+    productIndex.push(num);
   }
-  img1.src = productsArray[uniqueProductIndex[0]].src;
-  img2.src = productsArray[uniqueProductIndex[1]].src;
-  img3.src = productsArray[uniqueProductIndex[2]].src;
-  img1.alt = productsArray[uniqueProductIndex[0]].name;
-  img2.alt = productsArray[uniqueProductIndex[1]].name;
-  img3.alt = productsArray[uniqueProductIndex[2]].name;
-  productsArray[uniqueProductIndex[0]].views++;
-  productsArray[uniqueProductIndex[1]].views++;
-  productsArray[uniqueProductIndex[2]].views++;
-}
 
+  img1.src = productsArray[productIndex[0]].src;
+  img2.src = productsArray[productIndex[1]].src;
+  img3.src = productsArray[productIndex[2]].src;
+  img1.alt = productsArray[productIndex[0]].name;
+  img2.alt = productsArray[productIndex[1]].name;
+  img3.alt = productsArray[productIndex[2]].name;
+  productsArray[productIndex[0]].views++;
+  productsArray[productIndex[1]].views++;
+  productsArray[productIndex[2]].views++;
+
+  while (productIndex.length > 3) {
+    productIndex.shift();
+  }
+
+}
 
 function handleImageClick(event) {
   clicks++;
@@ -84,20 +94,92 @@ function handleImageClick(event) {
   }
   renderImages();
 
-  if (clicks === results) {
+  if (clicks === rounds) {
     imgContainer.removeEventListener('click', handleImageClick);
   }
 }
 
 function handleResults(event) {
 
-  if (clicks >= rounds) {
+  if (clicks === rounds) {
+    renderChart();
     for (let i = 0; i < productsArray.length; i++) {
       let li = document.createElement('li');
       li.textContent = `${productsArray[i].name} had ${productsArray[i].votes} votes, and was seen ${productsArray[i].views} times`;
       results.appendChild(li);
+      clicks = 0;
     }
   }
+}
+
+
+function getData() {
+  for (let i = 0; i < productsArray.length; i++) {
+    dataName.push(productsArray[i].name);
+    dataVotes.push(productsArray[i].votes);
+    dataViews.push(productsArray[i].views);
+  }
+}
+
+
+function renderChart() {
+  getData();
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: dataName,
+      datasets: [{
+        label: '# of Votes',
+        data: dataVotes,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      },
+      {
+        label: '# of Views',
+        data: dataViews,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
 }
 
 renderImages();

@@ -27,9 +27,6 @@ function Products(name, path) {
 }
 
 
-// localStorage.clear();
-
-
 if (localStorage.getItem('storedData')) {
 
   productsArray = JSON.parse(localStorage.getItem('storedData'));

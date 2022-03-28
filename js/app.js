@@ -26,7 +26,9 @@ function Products(name, path) {
   productsArray.push(this);
 }
 
-console.log(JSON.parse(localStorage.storedData));
+
+// localStorage.clear();
+
 
 if (localStorage.getItem('storedData')) {
 

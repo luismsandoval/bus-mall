@@ -1,5 +1,7 @@
 'use strict';
 
+// Global Variables
+
 let rounds = 25;
 let clicks = 0;
 let productsArray = [];
@@ -9,6 +11,8 @@ let dataName = [];
 let dataVotes = [];
 let dataViews = [];
 
+// DOM Variables
+
 let imgContainer = document.getElementById('container');
 let img1 = document.getElementById('first');
 let img2 = document.getElementById('second');
@@ -17,6 +21,7 @@ let img3 = document.getElementById('third');
 let clicky = document.getElementById('clicky');
 let results = document.getElementById('results');
 
+// Products Constructor
 
 function Products(name, path) {
   this.name = name;
@@ -25,7 +30,6 @@ function Products(name, path) {
   this.views = 0;
   productsArray.push(this);
 }
-
 
 if (localStorage.getItem('storedData')) {
 
@@ -54,17 +58,19 @@ if (localStorage.getItem('storedData')) {
   new Products('wine-glass', 'img/wine-glass.jpg');
 }
 
+
+// Save to local storage
+
 let storedArray = JSON.stringify(productsArray);
 
 localStorage.setItem('storedData', storedArray);
 
 
+// Random image generator
+
 function getRandomInt() {
   return Math.floor(Math.random() * productsArray.length);
 }
-
-
-
 
 function renderImages() {
 
@@ -85,15 +91,18 @@ function renderImages() {
   productsArray[productIndex[0]].views++;
   productsArray[productIndex[1]].views++;
   productsArray[productIndex[2]].views++;
-
+  
   while (productIndex.length > 3) {
     productIndex.shift();
   }
-
 }
 
 
+// Button click functions
 
+imgContainer.addEventListener('click', handleImageClick);
+
+clicky.addEventListener('click', handleResults);
 
 function handleImageClick(event) {
   clicks++;
@@ -112,9 +121,6 @@ function handleImageClick(event) {
   }
 }
 
-
-
-
 function handleResults(event) {
 
   if (clicks === rounds) {
@@ -132,6 +138,7 @@ function handleResults(event) {
 
 
 
+// Render chart
 
 function getData() {
   for (let i = 0; i < productsArray.length; i++) {
@@ -140,9 +147,6 @@ function getData() {
     dataViews.push(productsArray[i].views);
   }
 }
-
-
-
 
 function renderChart() {
   getData();
@@ -204,10 +208,7 @@ function renderChart() {
   });
 }
 
-
-
 renderImages();
 
-imgContainer.addEventListener('click', handleImageClick);
-
-clicky.addEventListener('click', handleResults);
+// clear storage switch for dev
+// localStorage.clear();
